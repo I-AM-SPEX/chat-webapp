@@ -30,7 +30,7 @@ const addUserToDb = async (user) => {
     const usersCollection = getUsersCollection(mongoClient);
     await usersCollection.insertOne(user);
   } catch (error) {
-    console.error("failed tod add user to db", error);
+    console.error("failed to add user to db", error);
   } finally {
     await mongoClient.close();
     console.log("Connection closed successfully");
@@ -52,4 +52,35 @@ const findUserByUserName = async (userName) => {
     console.log("Connection closed successfully");
   }
 };
-export { connectToCluster, addUserToDb, findUserByUserName };
+
+const addFriendToDb = async (userName, friendUserName) => {
+  let mongoClient;
+  try {
+    mongoClient = await connectToCluster(DB_URI);
+    const friend = await findUserByUserName(friendUserName);
+    if (friend) {
+      const user = await findUserByUserName(userName);
+      const friends = user.friends;
+      const friendsCopy = [...friends];
+      friendsCopy.push(friend._id);
+      user.friends = friendsCopy;
+      const usersCollection = getUsersCollection(mongoClient);
+      await usersCollection.updateOne(
+        { _id: user._id },
+        { $set: { friends: user.friends } },
+      );
+      return { status: true, message: "Friend added" };
+    } else {
+      return {
+        status: false,
+        message: "User does not exist. Invite them to Plain Chat",
+      };
+    }
+  } catch (error) {
+    console.log("Add friend failed");
+  } finally {
+    await mongoClient.close();
+    console.log("Connection closed successfully");
+  }
+};
+export { connectToCluster, addUserToDb, findUserByUserName, addFriendToDb };
