@@ -33,6 +33,7 @@ const addUserToDb = async (user) => {
     console.error("failed tod add user to db", error);
   } finally {
     await mongoClient.close();
+    console.log("Connection closed successfully");
   }
 };
 
@@ -44,6 +45,11 @@ const findUserByUserName = async (userName) => {
     const usersCollection = getUsersCollection(mongoClient);
     const user = await usersCollection.findOne({ userName: userName });
     return user;
-  } catch (error) { }
+  } catch (error) {
+    console.error("findUserByUserName failde", error);
+  } finally {
+    await mongoClient.close();
+    console.log("Connection closed successfully");
+  }
 };
 export { connectToCluster, addUserToDb, findUserByUserName };
