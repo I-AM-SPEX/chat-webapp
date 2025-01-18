@@ -3,6 +3,7 @@ class User {
     this._id = id;
     this.userName = userName;
     this.password = password;
+    this.friends = [];
   }
 }
 
