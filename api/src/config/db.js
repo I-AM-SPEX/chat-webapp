@@ -58,7 +58,19 @@ const findUserByUserName = async (userName) => {
     console.log("Connection closed successfully");
   }
 };
-
+const findChatByChatId = async (chatId) => {
+  let mongoClient;
+  try {
+    mongoClient = await connectToCluster(DB_URI);
+    const chatCollection = getChatsCollection(mongoClient);
+    const chat = await chatCollection.findOne({ chatId: chatId });
+    return chat;
+  } catch (error) {
+    console.log("Find chat by id function failed", error);
+  } finally {
+    await mongoClient.close();
+  }
+};
 const addFriendToDb = async (userName, friendUserName) => {
   let mongoClient;
   try {
@@ -109,4 +121,5 @@ export {
   findUserByUserName,
   addFriendToDb,
   addChat,
+  findChatByChatId,
 };
