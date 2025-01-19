@@ -1,8 +1,8 @@
 import express from "express";
-import { addFriend } from "../../controller/chat_controller.js";
+import { newChat, addMessage } from "../../controller/chat_controller.js";
 
 const router = express.Router();
 
-router.post("/addFriend", addFriend);
-
+router.post("/newChat", newChat);
+router.post("/message", addMessage);
 export { router };
