@@ -7,7 +7,6 @@ import cookieParser from "cookie-parser";
 const PORT = process.env.PORT;
 const DB_URI = process.env.DB_URI;
 const BASE_URI = process.env.BASE_URI;
-console.log(BASE_URI);
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
