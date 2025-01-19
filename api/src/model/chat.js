@@ -1,6 +1,7 @@
 class Chat {
-  constructor(friends) {
-    this.friends = friends;
+  constructor(id, chatId) {
+    this._id = id;
+    this.chatId = chatId;
     this.chats = [];
   }
 }
