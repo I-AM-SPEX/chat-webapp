@@ -1,11 +1,17 @@
 import { MongoClient } from "mongodb";
 const DB = process.env.DB;
 const USER_COLLECTION = process.env.USER_COLLECTION;
+const CHAT_COLLECTION = process.env.CHAT_COLLECTION;
 const DB_URI = process.env.DB_URI;
 
 const getUsersCollection = (mongoClient) => {
   const db = mongoClient.db(DB);
   const collection = db.collection(USER_COLLECTION);
+  return collection;
+};
+const getChatsCollection = (mongoClient) => {
+  const db = mongoClient.db(DB);
+  const collection = db.collection(CHAT_COLLECTION);
   return collection;
 };
 const connectToCluster = async () => {
@@ -83,4 +89,24 @@ const addFriendToDb = async (userName, friendUserName) => {
     console.log("Connection closed successfully");
   }
 };
-export { connectToCluster, addUserToDb, findUserByUserName, addFriendToDb };
+
+const addChat = async (chat) => {
+  let mongoClient;
+
+  try {
+    mongoClient = await connectToCluster(DB_URI);
+    const chatsCollection = getChatsCollection(mongoClient);
+    await chatsCollection.insertOne(chat);
+  } catch (error) {
+    console.log("Add Chat function failed", error);
+  } finally {
+    await mongoClient.close();
+  }
+};
+export {
+  connectToCluster,
+  addUserToDb,
+  findUserByUserName,
+  addFriendToDb,
+  addChat,
+};
