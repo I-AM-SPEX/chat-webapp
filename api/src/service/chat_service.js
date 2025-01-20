@@ -1,9 +1,28 @@
 import { ObjectId } from "mongodb";
-import { addChat, findChatByChatId, findUserByUserName } from "../config/db.js";
+import {
+  addChat,
+  addMessage,
+  findChatByChatId,
+  findUserByUserName,
+} from "../config/db.js";
 import { Chat } from "../model/chat.js";
 import { Message } from "../model/message.js";
 
-const dileverMessage = async () => { };
+const deliverMessage = async (chatId, newMessage) => {
+  const { id, timeStamp, text } = newMessage;
+  try {
+    const message = new Message(id, timeStamp, text);
+    const chat = await findChatByChatId(chatId);
+    const chats = chat.chats;
+    const chatsCopy = [...chats];
+    chatsCopy.push(message);
+    await addMessage(chatId, chatsCopy);
+    return { status: true, message: "Message Delivered" };
+  } catch (error) {
+    console.log("diliver message failed", error);
+    return { status: false, message: "Message failed to deliver" };
+  }
+};
 
 const createChat = async (userName, friendUserName) => {
   try {
@@ -60,4 +79,4 @@ const chatExists = async (userName, friendUserName) => {
     console.error("chatExist function failed");
   }
 };
-export { createChat };
+export { createChat, deliverMessage };
