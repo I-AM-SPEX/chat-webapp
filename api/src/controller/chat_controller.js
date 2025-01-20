@@ -1,5 +1,5 @@
 import { addFriendToDb } from "../config/db.js";
-import { createChat } from "../service/chat_service.js";
+import { createChat, deliverMessage } from "../service/chat_service.js";
 
 //const addFriend = async (req, res) => {
 //  const { userName, friendUserName } = req.body;
@@ -34,5 +34,21 @@ const newChat = async (req, res) => {
     }
   } catch (error) { }
 };
-const addMessage = async (req, res) => { };
-export { newChat, addMessage };
+const newMessage = async (req, res) => {
+  const { message, chatId } = req.body;
+  try {
+    if (message) {
+      const result = await deliverMessage(chatId, message);
+      if (result.status) {
+        res.status(200).json({ message: result.message });
+      } else {
+        res.status(200).json({ message: result.message });
+      }
+    } else {
+      res.status(200).json({ message: "Message failed to deliver" });
+    }
+  } catch (error) {
+    console.log("newMessage Controller failed", error);
+  }
+};
+export { newChat, newMessage };
