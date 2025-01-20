@@ -1,4 +1,4 @@
-import { addFriendToDb } from "../config/db.js";
+import { addFriendToDb, getAllChats } from "../config/db.js";
 import { createChat, deliverMessage } from "../service/chat_service.js";
 
 //const addFriend = async (req, res) => {
@@ -51,4 +51,11 @@ const newMessage = async (req, res) => {
     console.log("newMessage Controller failed", error);
   }
 };
-export { newChat, newMessage };
+
+const getChats = async (req, res) => {
+  try {
+    const results = await getAllChats();
+    res.status(200).json({ message: "getChats response", chats: results });
+  } catch (error) { }
+};
+export { newChat, newMessage, getChats };
