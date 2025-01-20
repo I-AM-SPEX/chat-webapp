@@ -115,6 +115,22 @@ const addChat = async (chat) => {
     await mongoClient.close();
   }
 };
+
+const addMessage = async (chatId, chats) => {
+  let mongoClient;
+  try {
+    mongoClient = await connectToCluster(DB_URI);
+    const chatsCollection = getChatsCollection(mongoClient);
+    await chatsCollection.updateOne(
+      { chatId: chatId },
+      { $set: { chats: chats } },
+    );
+  } catch (error) {
+    console.log("Add Message function failed", error);
+  } finally {
+    await mongoClient.close();
+  }
+};
 export {
   connectToCluster,
   addUserToDb,
@@ -122,4 +138,5 @@ export {
   addFriendToDb,
   addChat,
   findChatByChatId,
+  addMessage,
 };
