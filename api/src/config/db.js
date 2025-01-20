@@ -131,6 +131,20 @@ const addMessage = async (chatId, chats) => {
     await mongoClient.close();
   }
 };
+
+const getAllChats = async () => {
+  let mongoClient;
+  try {
+    mongoClient = await connectToCluster(DB_URI);
+    const chatCollection = getChatsCollection(mongoClient);
+    const chats = await chatCollection.find({}).toArray();
+    return chats;
+  } catch (error) {
+    console.log("Get all chats function failed", error);
+  } finally {
+    await mongoClient.close();
+  }
+};
 export {
   connectToCluster,
   addUserToDb,
@@ -139,4 +153,5 @@ export {
   addChat,
   findChatByChatId,
   addMessage,
+  getAllChats,
 };
