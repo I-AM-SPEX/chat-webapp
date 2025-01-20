@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import "dotenv/config";
 import { connectToCluster } from "./src/config/db.js";
 import { router as authRoute } from "./src/route/public/auth_route.js";
@@ -8,6 +9,7 @@ const PORT = process.env.PORT;
 const DB_URI = process.env.DB_URI;
 const BASE_URI = process.env.BASE_URI;
 const app = express();
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(`${BASE_URI}/auth`, authRoute);
