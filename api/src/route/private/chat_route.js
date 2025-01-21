@@ -9,5 +9,5 @@ const router = express.Router();
 
 router.post("/newChat", newChat);
 router.post("/newMessage", newMessage);
-router.get("/", getChats);
+router.get("/:id", getChats);
 export { router };
