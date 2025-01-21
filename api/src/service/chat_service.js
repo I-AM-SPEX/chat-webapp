@@ -9,7 +9,11 @@ import {
 } from "../config/db.js";
 import { Chat } from "../model/chat.js";
 import { Message } from "../model/message.js";
-import { filterRecipientId, mergeUserNameWithChat } from "../util/utils.js";
+import {
+  filterChatByUserId,
+  filterRecipientId,
+  mergeUserNameWithChat,
+} from "../util/utils.js";
 
 const deliverMessage = async (chatId, newMessage) => {
   const { id, timeStamp, text } = newMessage;
@@ -85,13 +89,11 @@ const chatExists = async (userName, friendUserName) => {
 };
 
 const getUserChats = async (userId) => {
-  const chats = await getAllChats();
-  const recipientIds = filterRecipientId(userId, chats);
+  const allChats = await getAllChats();
+  const userChats = filterChatByUserId(userId, allChats);
+  const recipientIds = filterRecipientId(userId, userChats);
   const userNames = await getUserNames(recipientIds);
-  const chatsWithUsernames = mergeUserNameWithChat(userNames, chats);
-  console.log(chatsWithUsernames);
+  const chatsWithUsernames = mergeUserNameWithChat(userNames, userChats);
+  return chatsWithUsernames;
 };
-new Promise(() => {
-  getUserChats("678c14c5e8ac828a4ffc36e1");
-});
-export { createChat, deliverMessage };
+export { createChat, deliverMessage, getUserChats };
