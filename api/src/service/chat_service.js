@@ -4,9 +4,12 @@ import {
   addMessage,
   findChatByChatId,
   findUserByUserName,
+  getAllChats,
+  getUserNames,
 } from "../config/db.js";
 import { Chat } from "../model/chat.js";
 import { Message } from "../model/message.js";
+import { filterRecipientId, mergeUserNameWithChat } from "../util/utils.js";
 
 const deliverMessage = async (chatId, newMessage) => {
   const { id, timeStamp, text } = newMessage;
@@ -60,6 +63,7 @@ const createChat = async (userName, friendUserName) => {
     console.log("CreateChat function failed", error);
   }
 };
+
 const chatExists = async (userName, friendUserName) => {
   try {
     const user = await findUserByUserName(userName);
@@ -79,4 +83,15 @@ const chatExists = async (userName, friendUserName) => {
     console.error("chatExist function failed");
   }
 };
+
+const getUserChats = async (userId) => {
+  const chats = await getAllChats();
+  const recipientIds = filterRecipientId(userId, chats);
+  const userNames = await getUserNames(recipientIds);
+  const chatsWithUsernames = mergeUserNameWithChat(userNames, chats);
+  console.log(chatsWithUsernames);
+};
+new Promise(() => {
+  getUserChats("678c14c5e8ac828a4ffc36e1");
+});
 export { createChat, deliverMessage };
