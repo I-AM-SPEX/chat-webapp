@@ -1,5 +1,9 @@
 import { addFriendToDb, getAllChats } from "../config/db.js";
-import { createChat, deliverMessage } from "../service/chat_service.js";
+import {
+  createChat,
+  deliverMessage,
+  getUserChats,
+} from "../service/chat_service.js";
 
 //const addFriend = async (req, res) => {
 //  const { userName, friendUserName } = req.body;
@@ -53,8 +57,9 @@ const newMessage = async (req, res) => {
 };
 
 const getChats = async (req, res) => {
+  const id = req.params.id;
   try {
-    const results = await getAllChats();
+    const results = await getUserChats(id);
     res.status(200).json({ message: "getChats response", chats: results });
   } catch (error) { }
 };
