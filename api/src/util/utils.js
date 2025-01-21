@@ -1,12 +1,17 @@
 import { ObjectId } from "mongodb";
 
 const filterRecipientId = (userId, chats) => {
-  const recipientIds = chats.map((chat) => {
+  const recipientIds = [];
+  chats.forEach((chat) => {
     const chatId = chat.chatId;
     const ids = chatId.split("_");
-    return userId === ids[0] ? new ObjectId(ids[1]) : new ObjectId(ids[0]);
-  });
 
+    if (ids[0] === userId || ids[1] === userId) {
+      recipientIds.push(
+        userId === ids[0] ? new ObjectId(ids[1]) : new ObjectId(ids[0]),
+      );
+    }
+  });
   return recipientIds;
 };
 
@@ -30,4 +35,16 @@ const mergeUserNameWithChat = (userNames, chats) => {
   return newChats;
 };
 
-export { filterRecipientId, mergeUserNameWithChat };
+const filterChatByUserId = (userId, chats) => {
+  const userChats = [];
+  chats.forEach((chat) => {
+    const chatId = chat.chatId;
+    const ids = chatId.split("_");
+
+    if (ids[0] === userId || ids[1] === userId) {
+      userChats.push(chat);
+    }
+  });
+  return userChats;
+};
+export { filterRecipientId, mergeUserNameWithChat, filterChatByUserId };
