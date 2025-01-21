@@ -145,6 +145,23 @@ const getAllChats = async () => {
     await mongoClient.close();
   }
 };
+
+const getUserNames = async (userIds) => {
+  let mongoClient;
+  try {
+    mongoClient = await connectToCluster(DB_URI);
+    const userCollection = getUsersCollection(mongoClient);
+    const userNames = await userCollection
+      .find({ _id: { $in: userIds } }, { projection: { _id: 1, userName: 1 } })
+      .toArray();
+
+    return userNames;
+  } catch (error) {
+    console.log("Get user names function failed", error);
+  } finally {
+    await mongoClient.close();
+  }
+};
 export {
   connectToCluster,
   addUserToDb,
@@ -154,4 +171,5 @@ export {
   findChatByChatId,
   addMessage,
   getAllChats,
+  getUserNames,
 };
