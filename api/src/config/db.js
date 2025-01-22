@@ -172,4 +172,5 @@ export {
   addMessage,
   getAllChats,
   getUserNames,
+  getChatsCollection,
 };
