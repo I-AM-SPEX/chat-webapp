@@ -1,0 +1,11 @@
+.sender-message-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid blue;
+  width: 45%;
+  align-self: self-end;
+}
+
+.time-stamp {
+  align-self: self-end;
+}
