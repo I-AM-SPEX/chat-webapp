@@ -3,17 +3,22 @@ import Sender from "../components/Sender";
 import Receiver from "../components/Receiver";
 import Friend from "../components/Friend";
 import { useEffect, useState } from "react";
-import { getChats } from "../service/api_service";
+import { getChats, sendMessage } from "../service/api_service";
 import { filterChatByUserName, senderOrRecipient } from "../util/utils";
+import { data } from "react-router-dom";
 const ChatPage = () => {
   const [chats, setChats] = useState([]);
   const [currentRecipient, setCurrentRecipient] = useState("");
   const [currentMessages, setCurrentMessages] = useState([]);
+  const [messageInput, setMessageInput] = useState("");
+  const [chatId, setChatId] = useState("");
 
   const loadChats = (chats) => {
     setChats(chats);
     const currentRecipient = chats[0].userName;
+    const currentChatId = chats[0].chatId;
     setCurrentRecipient(currentRecipient);
+    setChatId(currentChatId);
     const currentRecipientMessages = filterChatByUserName(
       currentRecipient,
       chats,
@@ -21,9 +26,11 @@ const ChatPage = () => {
     setCurrentMessages(currentRecipientMessages);
   };
 
-  const selectedChat = (userName) => {
+  const selectedChat = (userName, chatId) => {
     const currentRecipient = userName;
+    const currentChatId = chatId;
     setCurrentRecipient(userName);
+    setChatId(currentChatId);
     const currentRecipientMessages = filterChatByUserName(
       currentRecipient,
       chats,
@@ -31,6 +38,28 @@ const ChatPage = () => {
     setCurrentMessages(currentRecipientMessages);
   };
 
+  const handleSendMessage = () => {
+    if (messageInput.trim() != "") {
+      const message = {
+        id: "678c14c5e8ac828a4ffc36e1",
+        timeStamp: new Date().toString(),
+        text: messageInput,
+      };
+      const currentChatId = chatId;
+
+      const newMessagePromise = new Promise((myResolve, myReject) => {
+        sendMessage(currentChatId, message);
+        myResolve(true);
+        myReject(false);
+      });
+
+      newMessagePromise
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
+    } else {
+      alert("Empty Input Field");
+    }
+  };
   useEffect(() => {
     const chatsPromise = new Promise((myResolve, myReject) => {
       const results = getChats("678c14c5e8ac828a4ffc36e1");
@@ -52,7 +81,10 @@ const ChatPage = () => {
           <div className="friends-list">
             {chats.length > 0 ? (
               chats.map((chat, index) => (
-                <button key={index} onClick={() => selectedChat(chat.userName)}>
+                <button
+                  key={index}
+                  onClick={() => selectedChat(chat.userName, chat.chatId)}
+                >
                   {chat.userName}
                 </button>
               ))
@@ -79,8 +111,16 @@ const ChatPage = () => {
             )}
           </div>
           <div className="message-input-container">
-            <input className="message-input" />
-            <button className="message-button">Send</button>
+            <input
+              className="message-input"
+              id="messageInput"
+              name="messageInput"
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.target.value)}
+            />
+            <button className="message-button" onClick={handleSendMessage}>
+              Send
+            </button>
           </div>
         </div>
       </div>
