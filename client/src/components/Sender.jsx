@@ -1,9 +1,8 @@
-import React from "react";
 import "./Sender.css";
-const Sender = (props) => {
+const Sender = ({ message }) => {
   return (
     <div className="sender-message-container">
-      <p>Message</p>
+      <p>{message.text}</p>
       <p className="time-stamp">Time Stamp</p>
     </div>
   );
