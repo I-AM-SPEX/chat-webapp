@@ -4,7 +4,7 @@ import Receiver from "../components/Receiver";
 import Friend from "../components/Friend";
 import { useEffect, useState } from "react";
 import { getChats } from "../service/api_service";
-import { filterChatByUserName } from "../util/utils";
+import { filterChatByUserName, senderOrRecipient } from "../util/utils";
 const ChatPage = () => {
   const [chats, setChats] = useState([]);
   const [currentRecipient, setCurrentRecipient] = useState("");
@@ -66,7 +66,17 @@ const ChatPage = () => {
         </div>
         <div className="chatView">
           <div className="messages-container">
-            {chats.length > 0 ? <p>messages</p> : <p>Loading...</p>}
+            {chats.length > 0 ? (
+              currentMessages.map((message, index) =>
+                senderOrRecipient("678c14c5e8ac828a4ffc36e1", message._id) ? (
+                  <Sender key={index} message={message} />
+                ) : (
+                  <Receiver key={index} message={message} />
+                ),
+              )
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
           <div className="message-input-container">
             <input className="message-input" />
