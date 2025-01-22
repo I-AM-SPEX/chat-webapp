@@ -47,4 +47,13 @@ const filterChatByUserId = (userId, chats) => {
   });
   return userChats;
 };
-export { filterRecipientId, mergeUserNameWithChat, filterChatByUserId };
+const getRecipientId = (userId, chatId) => {
+  const ids = chatId.split("_");
+  return userId === ids[0] ? ids[1] : ids[0];
+};
+export {
+  filterRecipientId,
+  mergeUserNameWithChat,
+  filterChatByUserId,
+  getRecipientId,
+};
