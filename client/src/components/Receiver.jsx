@@ -1,9 +1,11 @@
-import React from "react";
 import "./Receiver.css";
-const Receiver = () => {
+const Receiver = ({ message }) => {
+  console.log(message);
+  console.log("the props");
+
   return (
     <div className="receiver-message-container">
-      <p>Message</p>
+      <p>{message.text}</p>
       <p className="time-stamp">Time Stamp</p>
     </div>
   );
