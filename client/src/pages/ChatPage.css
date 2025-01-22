@@ -1,0 +1,61 @@
+.container {
+  display: flex;
+  border: 1px solid black;
+  width: 60%;
+  height: 70%;
+  margin-top: 5vh;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.chats {
+  border: 1px solid red;
+  width: 30%;
+  text-align: center;
+}
+
+.friends-list {
+  border: 1px solid yellow;
+  height: 90%;
+  padding: 4px;
+  margin-bottom: 8px;
+  overflow-y: scroll;
+}
+
+.add-friend-button {
+  height: 40px;
+}
+
+.chatView {
+  position: relative;
+  border: 1px solid blue;
+  width: 70%;
+}
+
+.messages-container {
+  display: flex;
+  padding: 4px;
+  flex-direction: column;
+  height: 90%;
+  overflow-y: scroll;
+  margin-bottom: 8px;
+  border: 1px solid yellow;
+}
+
+.message-input-container {
+  width: 70%;
+  margin: 0 auto;
+  display: flex;
+  gap: 20px;
+}
+
+.message-input {
+  display: block;
+  width: 80%;
+  height: 50px;
+}
+
+.message-button {
+  width: 15%;
+  height: 50px;
+}
