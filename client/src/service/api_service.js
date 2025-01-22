@@ -18,4 +18,14 @@ const getChats = async (userId) => {
   }
 };
 
-export { getChats };
+const sendMessage = async (chatId, message) => {
+  try {
+    const payLoad = { message, chatId };
+    const response = await axiosInstance.post("/chat/newMessage", payLoad);
+    console.log(response.data);
+  } catch (error) {
+    console.error("sendMessage function failed", error);
+  }
+};
+
+export { getChats, sendMessage };
