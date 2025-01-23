@@ -2,78 +2,124 @@ import "./ChatPage.css";
 import Sender from "../components/Sender";
 import Receiver from "../components/Receiver";
 import Friend from "../components/Friend";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getChats, sendMessage } from "../service/api_service";
 import { filterChatByUserName, senderOrRecipient } from "../util/utils";
-import { data } from "react-router-dom";
+import { io } from "socket.io-client";
+
+const socket = io.connect("http://localhost:3000");
 const ChatPage = () => {
   const [chats, setChats] = useState([]);
   const [currentRecipient, setCurrentRecipient] = useState("");
   const [currentMessages, setCurrentMessages] = useState([]);
   const [messageInput, setMessageInput] = useState("");
   const [chatId, setChatId] = useState("");
+  const [trigger, setTrigger] = useState("");
+  const [initChat, setInitChat] = useState(true);
 
-  const loadChats = (chats) => {
-    setChats(chats);
-    const currentRecipient = chats[0].userName;
-    const currentChatId = chats[0].chatId;
-    setCurrentRecipient(currentRecipient);
-    setChatId(currentChatId);
+  const loadChats = (updatedChats) => {
+    //console.log(updatedChats, "here is loadChats updatedChats");
+    //const selectedRecipient =
+    //  currentRecipient === null ? updatedChats[0] : currentRecipient;
+    //console.log(selectedRecipient, "selectedRecipient");
+    //const currentChatId = selectedRecipient.chatId;
+    //
+    //const currentRecipientMessages = filterChatByUserName(
+    //  selectedRecipient.userName,
+    //  updatedChats,
+    //);
+    //setCurrentRecipient(selectedRecipient);
+    //setChatId(currentChatId);
+    //setCurrentMessages(currentRecipientMessages);
+
+    setChats(updatedChats);
+    setInitChat(true);
+  };
+
+  const intializeChat = () => {
+    if (chats.length > 0 && initChat) {
+      let selectedRecipient;
+      let selectedRecipientChatId;
+      let selectedRecipientUserName;
+      if (currentRecipient === "") {
+        selectedRecipient = chats[0];
+        selectedRecipientChatId = selectedRecipient.chatId;
+        selectedRecipientUserName = selectedRecipient.userName;
+      } else {
+        selectedRecipientChatId = chatId;
+        selectedRecipientUserName = currentRecipient;
+      }
+
+      console.log(selectedRecipient, "selectedRecipient");
+      console.log(
+        "chats fromm init chat after message sent",
+        selectedRecipientUserName,
+      );
+
+      const currentRecipientMessages = filterChatByUserName(
+        selectedRecipientUserName,
+        chats,
+      );
+      setCurrentRecipient(selectedRecipientUserName);
+      setChatId(selectedRecipientChatId);
+      setCurrentMessages(currentRecipientMessages);
+      setInitChat(false);
+    } else {
+      console.log(initChat, "this is initChat");
+    }
+  };
+  const selectedChat = (selectedUserName, selectedChatId) => {
     const currentRecipientMessages = filterChatByUserName(
-      currentRecipient,
+      selectedUserName,
       chats,
     );
     setCurrentMessages(currentRecipientMessages);
+    setCurrentRecipient(selectedUserName);
+    setChatId(selectedChatId);
   };
 
-  const selectedChat = (userName, chatId) => {
-    const currentRecipient = userName;
-    const currentChatId = chatId;
-    setCurrentRecipient(userName);
-    setChatId(currentChatId);
-    const currentRecipientMessages = filterChatByUserName(
-      currentRecipient,
-      chats,
-    );
-    setCurrentMessages(currentRecipientMessages);
-  };
-
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (messageInput.trim() != "") {
       const message = {
         id: "678c14c5e8ac828a4ffc36e1",
         timeStamp: new Date().toString(),
         text: messageInput,
       };
-      const currentChatId = chatId;
-
-      const newMessagePromise = new Promise((myResolve, myReject) => {
-        sendMessage(currentChatId, message);
-        myResolve(true);
-        myReject(false);
+      console.log(currentRecipient, "currentRecipient from handleSendMessage");
+      console.log(chatId, "from handleSendMessage");
+      await sendMessage(chatId, message).then(() => {
+        setMessageInput("");
+        setTrigger(Math.random());
       });
-
-      newMessagePromise
-        .then((data) => console.log(data))
-        .catch((error) => console.error(error));
     } else {
       alert("Empty Input Field");
     }
   };
   useEffect(() => {
-    const chatsPromise = new Promise((myResolve, myReject) => {
-      const results = getChats("678c14c5e8ac828a4ffc36e1");
-      if (results) {
-        myResolve(results);
+    const fetchChats = async () => {
+      try {
+        const response = await getChats("678c14c5e8ac828a4ffc36e1");
+        loadChats(response);
+
+        console.log(response);
+        console.log("get chats response");
+      } catch (error) {
+        console.error("fetchChats function failed", error);
       }
-      myReject("Hello error");
+    };
+    console.log("The useEffect runs how many times");
+    socket.on("testing", (data) => {
+      if (data == "678c14c5e8ac828a4ffc36e1") {
+        console.log("it works dummy");
+        setTrigger(Math.random() * 10);
+      } else {
+        console.log("it might work");
+      }
     });
-    chatsPromise
-      .then((data) => loadChats(data))
-      .catch((error) => {
-        console.error("UseEffect failed", error);
-      });
-  }, []);
+    fetchChats();
+  }, [trigger]);
+
+  intializeChat();
   return (
     <div id="page">
       <div className="container">
