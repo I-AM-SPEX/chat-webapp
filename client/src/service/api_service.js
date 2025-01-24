@@ -21,10 +21,19 @@ const sendMessage = async (chatId, message) => {
   try {
     const payLoad = { message, chatId };
     const response = await axiosInstance.post("/chat/newMessage", payLoad);
-    console.log(response.data);
   } catch (error) {
     console.error("sendMessage function failed", error);
   }
 };
 
-export { getChats, sendMessage };
+const addFriend = async (newChat) => {
+  try {
+    const payLoad = newChat;
+    const response = await axiosInstance.post("/chat/newChat", payLoad);
+    return response;
+  } catch (error) {
+    console.log("addFriend function failed", error);
+  }
+};
+
+export { getChats, sendMessage, addFriend };
