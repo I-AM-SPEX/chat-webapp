@@ -1,15 +1,29 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./SignUpPage.css";
 import { useState } from "react";
+import { signUp } from "../service/api_service";
 const SignUpPage = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleFormSubmit = (e) => {
+  const navigate = useNavigate();
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log(e.target.userName.value);
-    console.log(e.target.password.value);
+    const userName = e.target.userName.value;
+    const password = e.target.password.value;
+    const credentials = { userName, password };
+    console.log(credentials);
+    const response = await signUp(credentials);
+    if (response.data.status) {
+      setTimeout(() => {
+        alert(response.data.message);
+        navigate("/");
+      }, 1000);
+    } else {
+      setInterval(() => {
+        alert(response.data.message);
+      }, 2000);
+    }
   };
   return (
     <div id="page">
