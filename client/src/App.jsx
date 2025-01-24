@@ -6,9 +6,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route exact path="/" element={<ChatPage />} />
-        <Route exact path="loginPage" element={<LoginPage />} />
+        <Route exact path="/" element={<LoginPage />} />
         <Route exact path="signUpPage" element={<SignUpPage />} />
+        <Route exact path="chatPage" element={<ChatPage />} />
       </Routes>
     </Router>
   );
