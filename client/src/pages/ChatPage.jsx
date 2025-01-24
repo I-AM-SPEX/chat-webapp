@@ -3,7 +3,7 @@ import Sender from "../components/Sender";
 import Receiver from "../components/Receiver";
 import Friend from "../components/Friend";
 import { useCallback, useEffect, useState } from "react";
-import { getChats, sendMessage } from "../service/api_service";
+import { addFriend, getChats, sendMessage } from "../service/api_service";
 import { filterChatByUserName, senderOrRecipient } from "../util/utils";
 import { io } from "socket.io-client";
 
@@ -95,6 +95,15 @@ const ChatPage = () => {
       alert("Empty Input Field");
     }
   };
+
+  const handleAddFriend = async () => {
+    const friendUserName = prompt("Enter Friend's UserName").trim();
+    console.log("here is the friend user name sam", friendUserName);
+    const newChat = { userName: "spex", friendUserName };
+    console.log(newChat);
+    const response = await addFriend(newChat);
+    alert(response.data.message);
+  };
   useEffect(() => {
     const fetchChats = async () => {
       try {
@@ -139,7 +148,9 @@ const ChatPage = () => {
             )}
           </div>
           <div>
-            <button className="add-friend-button">Add Friend</button>
+            <button className="add-friend-button" onClick={handleAddFriend}>
+              Add Friend
+            </button>
           </div>
         </div>
         <div className="chatView">
