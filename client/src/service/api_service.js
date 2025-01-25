@@ -36,4 +36,15 @@ const addFriend = async (newChat) => {
   }
 };
 
-export { getChats, sendMessage, addFriend };
+const signUp = async (credentials) => {
+  try {
+    const payLoad = credentials;
+    const response = await axiosInstance.post("/auth/signUP", payLoad);
+    console.log(response, "here is the response from signUp");
+    return response;
+  } catch (error) {
+    console.error("signUp function failed", error);
+  }
+};
+
+export { getChats, sendMessage, addFriend, signUp };
